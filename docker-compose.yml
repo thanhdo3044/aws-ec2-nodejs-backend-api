@@ -1,0 +1,32 @@
+version: '1'
+
+services:
+  app:
+    image: node:20.15.1
+    container_name: nodejs-backend
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:password@db:5432/mydatabase
+    depends_on:
+      - db
+    command: sh -c "npm install && npm run dev"
+
+  db:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=mydatabase
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
